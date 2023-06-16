@@ -3,10 +3,10 @@
 #include <stdio.h>
 
 /**
- *int  main -> Prints the last digit of the random generated number
+ *main -> Prints the last digit of the random generated number
  * evn if it is greater than 5, less than 6, or 0 to the output.
  *
- * Return = 0.
+ *Return: Always 0.
  */
 int main(void)
 {
