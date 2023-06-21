@@ -1,3 +1,7 @@
+/*
+ * File: 101-natural.c
+ */
+
 #include <stdio.h>
 
 /**
@@ -8,8 +12,7 @@
  */
 int main(void)
 {
-    int i;
-    int sum = 0;
+    int i, sum = 0;
 
     for (i = 0; i < 1024; i++)
     {
