@@ -2,7 +2,8 @@
 #include <stdio.h>
 
 /**
- * main - Prints multiplicates of Fizz, Buzz, and FizzBuzz
+ * main - Prints multiples of Fizz, Buzz, and FizzBuzz
+ *
  * Return: Always 0 (Success)
  */
 int main(void)
@@ -33,6 +34,7 @@ int main(void)
 			printf(" ");
 		}
 	}
+
 	printf("\n");
 	return (0);
 }
