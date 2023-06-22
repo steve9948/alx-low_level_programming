@@ -20,4 +20,3 @@ Write a function that prints a square, followed by a new line.
 9. Fizz-Buzz
 10. Triangles
 Write a function that prints a triangle, followed by a new line.
-
