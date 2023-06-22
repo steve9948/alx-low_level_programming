@@ -3,7 +3,6 @@
 /**
  * print_triangle - prints a triangle, followed by a new line
  * @size: size of the triangle
- * Return: Always 0
  */
 void print_triangle(int size)
 {
@@ -13,22 +12,15 @@ void print_triangle(int size)
     }
     else
     {
-        int i, j;
+        int row, column;
 
-        for (i = 1; i <= size; i++)
+        for (row = 1; row <= size; row++)
         {
-            for (j = i; j < size; j++)
-            {
-                _putchar(' ');
-            }
-
-            for (j = 1; j <= i; j++)
+            for (column = 1; column <= row; column++)
             {
                 _putchar('#');
             }
-
             _putchar('\n');
         }
     }
 }
-
