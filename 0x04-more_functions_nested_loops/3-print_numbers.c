@@ -1,14 +1,18 @@
 #include "main.h"
-#include <stdio.h>
 
 /**
- * main - Entry point
+ * print_numbers - Prints the numbers from 0 to 9
  *
- * Return: Always 0
+ * Return: Always 0.
  */
-int main(void)
+void print_numbers(void)
 {
-	printf("%d\n", mul(98, 1024));
-	printf("%d\n", mul(-402, 4096));
-	return (0);
+	int x;
+
+	for (x = 0; x <= 9; x++)
+	{
+		_putchar(x + '0');
+	}
+
+	_putchar('\n');
 }
