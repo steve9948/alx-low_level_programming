@@ -2,9 +2,8 @@
 #include <stdio.h>
 
 /**
- * main - Prints the numbers from 1 to 100 with replacements for multiples of 3 and 5
- *
- * Return: 0
+ * main - Prints multiplicates of Fizz, Buzz, and FizzBuzz
+ * Return: Always 0 (Success)
  */
 int main(void)
 {
