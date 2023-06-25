@@ -1,13 +1,12 @@
 #include <stdio.h>
 
 /**
- * main - fibonacci <3
+ * main - Fibonacci <3
  *
- * Purpose - Dont hardcode any fibonacci 
+ * Purpose - Generate Fibonacci sequence without hardcoding any values
  *
- * Return: 0 (Success)
+ * Return: Always 0 (Success)
  */
-
 int main(void)
 {
 	unsigned long int i;
@@ -28,10 +27,10 @@ int main(void)
 		bef = aft - bef;
 	}
 
-	bef1 = (bef / l);
-	bef2 = (bef % l);
-	aft1 = (aft / l);
-	aft2 = (aft % l);
+	bef1 = bef / l;
+	bef2 = bef % l;
+	aft1 = aft / l;
+	aft2 = aft % l;
 
 	for (i = 92; i < 99; ++i)
 	{
@@ -42,7 +41,7 @@ int main(void)
 		aft2 = aft2 + bef2;
 		bef2 = aft2 - bef2;
 	}
+
 	printf("\n");
 	return (0);
 }
-
