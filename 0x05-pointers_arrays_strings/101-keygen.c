@@ -37,10 +37,11 @@ int main(void)
 
     printf("%s\n", password);
 
-    if (strncmp(password, EXPECTED_PASSWORD, PASSWORD_LENGTH) == 0)
+    if (strcmp(password, EXPECTED_PASSWORD) == 0)
         printf("Tada! Congrats\n");
     else
         printf("Wrong password\n");
 
     return 0;
 }
+
