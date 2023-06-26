@@ -4,11 +4,6 @@
 
 #define PASSWORD_LENGTH 8
 
-/**
- * generateRandomChar - Generates a random character
- *
- * Return: A random character
- */
 char generateRandomChar() {
     int randomNum = rand() % 62;
     if (randomNum < 26) {
@@ -20,22 +15,14 @@ char generateRandomChar() {
     }
 }
 
-/**
- * generateRandomPassword - Generates a random password
- * @password: The buffer to store the generated password
- */
 void generateRandomPassword(char* password) {
-    for (int i = 0; i < PASSWORD_LENGTH; i++) {
+    int i;
+    for (i = 0; i < PASSWORD_LENGTH; i++) {
         password[i] = generateRandomChar();
     }
     password[PASSWORD_LENGTH] = '\0';
 }
 
-/**
- * main - Entry point of the program
- *
- * Return: Always 0 (Success)
- */
 int main() {
     srand(time(NULL));
 
