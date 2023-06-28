@@ -1,0 +1,17 @@
+#include <stdio.h>
+
+/**
+*main - prints the size o char, float, Int and float using the sizeof method.
+*
+*Return - Size of the data type
+*/
+
+int main (void){
+int n;
+
+printf (" The size of a char value is: %lu bytes/n", sizeof(char));
+printf ("The size of a float value is: %lu bytes/n", sizeof(float));
+printf ("The size of an int value is: %lu bytes/n", sizeof(int));
+
+return (0)
+}
