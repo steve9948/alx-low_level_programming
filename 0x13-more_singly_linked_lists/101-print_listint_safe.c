@@ -1,36 +1,34 @@
 #include "lists.h"
 
 /**
- * print_listint_safe - Prints a listint_t linked list.
+ * print_listint_safe - Prints a listint_t linked list, handling loops.
  * @head: Pointer to the head of the list.
- *
- * Return: The number of nodes in the list.
+ * Return: Number of nodes in the list.
  */
 size_t print_listint_safe(const listint_t *head)
 {
 	const listint_t *slow = head, *fast = head;
 	size_t count = 0;
 
-	/* Floyd's Cycle Detection Algorithm to check for loops */
 	while (fast && fast->next)
 	{
-		count++;
 		printf("[%p] %d\n", (void *)slow, slow->n);
+		count++;
 		slow = slow->next;
 		fast = fast->next->next;
 
 		if (slow == fast)
 		{
-			printf("-> [%p] %d\n", (void *)slow, slow->n);
-			exit(98);
+			printf("[%p] %d\n", (void *)slow, slow->n);
+			return (count);
 		}
 	}
 
-	/* If no loop, print the remaining nodes normally */
+	/* Print the remaining nodes if no loop is detected */
 	while (slow)
 	{
-		count++;
 		printf("[%p] %d\n", (void *)slow, slow->n);
+		count++;
 		slow = slow->next;
 	}
 
