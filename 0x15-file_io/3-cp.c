@@ -1,4 +1,3 @@
-#include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,13 +9,6 @@ void close_file(int fd);
 int read_and_write(int fd_from, int fd_to);
 int copy_file(const char *src_filename, const char *dest_filename);
 
-/**
- * main - Copies the content of a file to another file.
- * @argc: The number of arguments passed to the program.
- * @argv: An array of strings containing the arguments.
- *
- * Return: 0 on success, or exit with error codes 97 to 100.
- */
 int main(int argc, char *argv[])
 {
 	if (argc != 3)
@@ -31,13 +23,6 @@ int main(int argc, char *argv[])
 	return (0);
 }
 
-/**
- * copy_file - Copies the content of a file to another file.
- * @src_filename: The name of the source file.
- * @dest_filename: The name of the destination file.
- *
- * Return: 0 on success, or -1 on failure.
- */
 int copy_file(const char *src_filename, const char *dest_filename)
 {
 	int fd_from, fd_to, ret;
@@ -60,12 +45,6 @@ int copy_file(const char *src_filename, const char *dest_filename)
 	return (ret);
 }
 
-/**
- * open_source_file - Opens the source file in read-only mode.
- * @src_filename: The name of the source file.
- *
- * Return: The file descriptor, or -1 on failure.
- */
 int open_source_file(const char *src_filename)
 {
 	int fd_from = open(src_filename, O_RDONLY);
@@ -76,12 +55,6 @@ int open_source_file(const char *src_filename)
 	return (fd_from);
 }
 
-/**
- * open_dest_file - Opens the destination file in write mode.
- * @dest_filename: The name of the destination file.
- *
- * Return: The file descriptor, or -1 on failure.
- */
 int open_dest_file(const char *dest_filename)
 {
 	int fd_to = open(dest_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
@@ -92,23 +65,12 @@ int open_dest_file(const char *dest_filename)
 	return (fd_to);
 }
 
-/**
- * close_file - Closes the file descriptor.
- * @fd: The file descriptor to close.
- */
 void close_file(int fd)
 {
 	if (fd != -1 && close(fd) == -1)
 		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
 }
 
-/**
- * read_and_write - Reads from source file and writes to destination file.
- * @fd_from: The file descriptor of the source file.
- * @fd_to: The file descriptor of the destination file.
- *
- * Return: 0 on success, or -1 on failure.
- */
 int read_and_write(int fd_from, int fd_to)
 {
 	ssize_t r, w;
