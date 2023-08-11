@@ -2,133 +2,114 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BUF_SIZE 1024
-
-int open_source_file(const char *src_filename);
-int open_dest_file(const char *dest_filename);
-void close_file(int fd);
-int read_and_write(int fd_from, int fd_to);
-int copy_file(const char *src_filename, const char *dest_filename);
-
 /**
- * main - Copies the content of a file to another file.
- * @argc: The number of arguments passed to the program.
- * @argv: An array of strings containing the arguments.
+ * create_buffer - Allocates 1024 bytes for a buffer.
+ * @file: The name of the file buffer is storing chars for.
  *
- * Return: 0 on success, or exit with error codes 97 to 100.
+ * Return: A pointer to the newly-allocated buffer.
  */
-int main(int argc, char *argv[])
+char *create_buffer(char *file)
 {
-	if (argc != 3)
+	char *buffer;
+
+	buffer = malloc(sizeof(char) * 1024);
+
+	if (buffer == NULL)
 	{
-		dprintf(STDERR_FILENO, "Usage: %s file_from file_to\n", argv[0]);
-		exit(97);
+		dprintf(STDERR_FILENO,
+			"Error: Can't write to %s\n", file);
+		exit(99);
 	}
 
-	if (copy_file(argv[1], argv[2]) == -1)
-		exit(98);
-
-	return (0);
+	return (buffer);
 }
 
 /**
- * copy_file - Copies the content of a file to another file.
- * @src_filename: The name of the source file.
- * @dest_filename: The name of the destination file.
- *
- * Return: 0 on success, or -1 on failure.
- */
-int copy_file(const char *src_filename, const char *dest_filename)
-{
-	int fd_from, fd_to, ret;
-
-	fd_from = open_source_file(src_filename);
-	fd_to = open_dest_file(dest_filename);
-
-	if (fd_from == -1 || fd_to == -1)
-	{
-		close_file(fd_from);
-		close_file(fd_to);
-		return (-1);
-	}
-
-	ret = read_and_write(fd_from, fd_to);
-
-	close_file(fd_from);
-	close_file(fd_to);
-
-	return (ret);
-}
-
-/**
- * open_source_file - Opens the source file in read-only mode.
- * @src_filename: The name of the source file.
- *
- * Return: The file descriptor, or -1 on failure.
- */
-int open_source_file(const char *src_filename)
-{
-	int fd_from = open(src_filename, O_RDONLY);
-
-	if (fd_from == -1)
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", src_filename);
-
-	return (fd_from);
-}
-
-/**
- * open_dest_file - Opens the destination file in write mode.
- * @dest_filename: The name of the destination file.
- *
- * Return: The file descriptor, or -1 on failure.
- */
-int open_dest_file(const char *dest_filename)
-{
-	int fd_to = open(dest_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
-
-	if (fd_to == -1)
-		dprintf(STDERR_FILENO, "Error: Can't write to file %s\n", dest_filename);
-
-	return (fd_to);
-}
-
-/**
- * close_file - Closes the file descriptor.
- * @fd: The file descriptor to close.
+ * close_file - Closes file descriptors.
+ * @fd: The file descriptor to be closed.
  */
 void close_file(int fd)
 {
-	if (fd != -1 && close(fd) == -1)
+	int c;
+
+	c = close(fd);
+
+	if (c == -1)
+	{
 		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
+		exit(100);
+	}
 }
 
 /**
- * read_and_write - Reads from source file and writes to destination file.
- * @fd_from: The file descriptor of the source file.
- * @fd_to: The file descriptor of the destination file.
- *
- * Return: 0 on success, or -1 on failure.
+ * copy_data - Copies data from source to destination file.
+ * @from: Source file descriptor.
+ * @to: Destination file descriptor.
+ * @buffer: Buffer to store data.
  */
-int read_and_write(int fd_from, int fd_to)
+void copy_data(int from, int to, char *buffer)
 {
-	ssize_t r, w;
-	char buffer[BUF_SIZE];
+	int r, w;
 
-	while ((r = read(fd_from, buffer, BUF_SIZE)) > 0)
-	{
-		w = write(fd_to, buffer, r);
-		if (w == -1 || w != r)
+	do {
+		r = read(from, buffer, 1024);
+
+		if (from == -1 || r == -1)
 		{
-			dprintf(STDERR_FILENO, "Error: Can't write to destination file\n");
-			return (-1);
+			dprintf(STDERR_FILENO,
+				"Error: Can't read from source file\n");
+			close_file(from);
+			close_file(to);
+			free(buffer);
+			exit(98);
 		}
+
+		w = write(to, buffer, r);
+
+		if (to == -1 || w == -1)
+		{
+			dprintf(STDERR_FILENO,
+				"Error: Can't write to destination file\n");
+			close_file(from);
+			close_file(to);
+			free(buffer);
+			exit(99);
+		}
+	} while (r > 0);
+}
+
+/**
+ * main - Copies the contents of a file to another file.
+ * @argc: The number of arguments supplied to the program.
+ * @argv: An array of pointers to the arguments.
+ *
+ * Return: 0 on success.
+ *
+ * Description: If the argument count is incorrect - exit code 97.
+ * If file_from does not exist or cannot be read - exit code 98.
+ * If file_to cannot be created or written to - exit code 99.
+ * If file_to or file_from cannot be closed - exit code 100.
+ */
+int main(int argc, char *argv[])
+{
+	int from, to;
+	char *buffer;
+
+	if (argc != 3)
+	{
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+		exit(97);
 	}
 
-	if (r == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from source file\n");
-		return (-1);
-	}
+	buffer = create_buffer(argv[2]);
+	from = open(argv[1], O_RDONLY);
+	to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
+
+	copy_data(from, to, buffer);
+
+	close_file(from);
+	close_file(to);
+	free(buffer);
 
 	return (0);
 }
