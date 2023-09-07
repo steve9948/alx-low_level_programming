@@ -3,50 +3,78 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <elf.h>
+#include <string.h>
 
 /**
- * main - Displays information contained in the ELF header of a given ELF file.
- * @argc: The number of arguments.
- * @argv: An array of strings containing the arguments.
- *
- * Return: Always 0 on success, or exit with status code 98 on error.
+ * print_elf_header_info - Print information from ELF header.
+ * @header: Pointer to the ELF header structure.
  */
-int main(int argc, char **argv)
+void print_elf_header_info(Elf64_Ehdr *header);
+
+/**
+ * main - Entry point of the program.
+ * @argc: The number of command line arguments.
+ * @argv: An array containing the command line arguments.
+ * Return: 0 on success, 1 on incorrect usage, 98 on error.
+ */
+int main(int argc, char *argv[]);
+
+void print_elf_header_info(Elf64_Ehdr *header)
 {
-	int fd, i;
-	Elf64_Ehdr header;
-	ssize_t read_result;
-
-	if (argc != 2)
-		dprintf(STDERR_FILENO, "Usage: %s elf_filename\n", argv[0]), exit(98);
-
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-		dprintf(STDERR_FILENO, "Error: Cannot open file %s\n", argv[1]), exit(98);
-
-	read_result = read(fd, &header, sizeof(header));
-	if (read_result != sizeof(header))
-		dprintf(STDERR_FILENO, "Cannot read ELF %s\n", argv[1]), close(fd), exit(98);
-
-	if (header.e_ident[EI_MAG0] != ELFMAG0 ||
-	    header.e_ident[EI_MAG1] != ELFMAG1 ||
-	    header.e_ident[EI_MAG2] != ELFMAG2 ||
-	    header.e_ident[EI_MAG3] != ELFMAG3)
-		dprintf(STDERR_FILENO, "E %s not ELF file\n", argv[1]), close(fd), exit(98);
-
+	int i;
 	printf("Magic: ");
 	for (i = 0; i < EI_NIDENT; i++)
-		printf("%02x ", header.e_ident[i]);
-	printf("\nClass: %s\n",
-	       (header.e_ident[EI_CLASS] == ELFCLASS32) ? "ELF32" : "ELF64");
-	printf("Data: %s\n",
-	       (header.e_ident[EI_DATA] == ELFDATA2LSB) ? "lilE" : "Unknow encoding");
-	printf("Version: %d\n", header.e_ident[EI_VERSION]);
-	printf("OS/ABI: %d\n", header.e_ident[EI_OSABI]);
-	printf("ABI Version: %d\n", header.e_ident[EI_ABIVERSION]);
-	printf("Type: %d\n", header.e_type);
-	printf("Entry point address: 0x%lx\n", (unsigned long)header.e_entry);
+	{
+		printf("%02x ", header->e_ident[i]);
+	}
+	printf("\nClass: %d-bit\n", (header->e_ident[EI_CLASS] == ELFCLASS64) ? 64 : 32);
+	printf("Data: %s-endian\n", (header->e_ident[EI_DATA] == ELFDATA2LSB) ? "Little" : "Big");
+	printf("Version: %d\n", header->e_ident[EI_VERSION]);
+	printf("OS/ABI: %d\n", header->e_ident[EI_OSABI]);
+	printf("ABI Version: %d\n", header->e_ident[EI_ABIVERSION]);
+	printf("Type: %d\n", header->e_type);
+	printf("Entry point address: 0x%lx\n", (unsigned long)header->e_entry);
+}
+
+int main(int argc, char *argv[])
+{
+	int fd;
+	Elf64_Ehdr header;
+	ssize_t n;
+	const char *elf_filename; /* Declare elf_filename at the beginning of the block */
+
+	if (argc != 2)
+	{
+		fprintf(stderr, "Usage: %s elf_filename\n", argv[0]);
+		return (1);
+	}
+
+	elf_filename = argv[1]; /* Assign the value here */
+	fd = open(elf_filename, O_RDONLY);
+	if (fd == -1)
+	{
+		perror("Error opening file");
+		return (98);
+	}
+
+	n = read(fd, &header, sizeof(header));
+	if (n == -1)
+	{
+		perror("Error reading file");
+		close(fd);
+		return (98);
+	}
+
+	if (n != sizeof(header) || memcmp(header.e_ident, ELFMAG, SELFMAG) != 0)
+	{
+		fprintf(stderr, "Error: Not an ELF file\n");
+		close(fd);
+		return (98);
+	}
+
+	print_elf_header_info(&header);
 
 	close(fd);
 	return (0);
 }
+
