@@ -1,9 +1,9 @@
 #include "main.h"
 
 /**
- * main - Copies the contents of a file into another file.
- * @argc: Number of arguments passed.
- * @argv: Argument vector arry.
+ * main - Copies the contents of one file to another.
+ * @argc: Number of arguments.
+ * @argv: Argument vector.
  *
  * Return: 0 on success.
  */
